@@ -26,37 +26,44 @@ var colors = d3.scaleLinear()
     .range(['#B58929', '#C61C6F',
             '#268BD2', '#85992C'])
 
-d3.select('#viz').append('svg')
-  .attr('width', width)
-  .attr('height', height)
-.selectAll('rect').data(bardata)
-  .enter().append('rect')
-    .attr('fill', function(d, i) {
-      return colors(i)
-    })
-    .attr('width', function(d) {
-      return xScale.bandwidth();
-    })
-    .attr('height', function(d) {
-      return yScale(d);
-    })
-    .attr('x', function(d) {
-      return xScale(d);
-    })
-    .attr('y', function(d) {
-      return height - yScale(d);
-    })
-    
-    .on('mouseover', function(d) {
-      tempColor = this.style.fill;
-      d3.select(this)
-        .style('fill', 'yellow')
-    })
+var myChart = d3.select("#viz")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .selectAll("rect")
+  .data(bardata)
+  .enter()
+  .append("rect")
+  .attr("fill", function (d, i) {
+    return colors(i);
+  })
+  .attr("width", function (d) {
+    return xScale.bandwidth();
+  })
 
-    .on('mouseout', function(d) {
-      d3.select(this)
-        .style('fill', tempColor)
-    })
-    
+  .attr("height", 0)
+  .attr("x", function (d) {
+    return xScale(d);
+  })
+  .attr("y", height)
 
-    ;
+  .on("mouseover", function (d) {
+    tempColor = this.style.fill;
+    d3.select(this).style("fill", "yellow");
+  })
+
+  .on("mouseout", function (d) {
+    d3.select(this).style("fill", tempColor);
+  });
+
+
+  myChart.transition()
+  .attr("height", function (d) {
+    return yScale(d);
+  })
+  .attr("y", function (d) {
+    return height - yScale(d);
+  })
+  .delay(function (d, i) { return i * 20; })
+    .duration(1000)
+    .ease(d3.easeBounce);
