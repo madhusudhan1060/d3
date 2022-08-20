@@ -26,7 +26,14 @@ var colors = d3.scaleLinear()
     .range(['#B58929', '#C61C6F',
             '#268BD2', '#85992C'])
 
-var myChart = 
+var tooltip = d3.select('body').append('div')
+    .style('position', 'absolute')
+    .style('padding', '0 10px')
+    .style('background', '#000')
+    .style('color', '#fff')
+    .style('opacity', 0);
+
+var myChart =
 d3.select('#viz').append('svg')
   .attr('width', width)
   .attr('height', height)
@@ -43,8 +50,15 @@ d3.select('#viz').append('svg')
       return xScale(d);
     })
     .attr('y', height)
-    
+
     .on('mouseover', function(d) {
+        tooltip.transition()
+            .style('opacity', .9);
+        tooltip.html(d)
+            .style('left', d3.event.pageX + 'px')
+            .style('top', d3.event.pageY + 'px')
+            .style('opacity', .9)
+
       tempColor = this.style.fill;
       d3.select(this)
         .style('fill', 'yellow')
